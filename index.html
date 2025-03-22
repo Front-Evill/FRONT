@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRONT HUB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a2a72;
+            --secondary-color: #009ffd;
+            --accent-color: #ffd700;
+            --text-color: #ffffff;
+            --bg-color: #0f0f3e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* الترويسة والشعار */
+        header {
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: inline-block;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 6rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            margin-top: 1rem;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+
+        /* قسم الصوت */
+        .audio-section {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            width: 50px;
+            overflow: hidden;
+        }
+
+        .audio-section.active {
+            width: 250px;
+        }
+
+        .sound-icon {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-right: 1rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .sound-icon:hover {
+            transform: scale(1.1);
+            background: rgba(255, 215, 0, 0.4);
+        }
+
+        .volume-slider-container {
+            flex: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .audio-section.active .volume-slider-container {
+            opacity: 1;
+        }
+
+        .volume-slider {
+            width: 100%;
+            height: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+        }
+
+        /* تأثيرات الخلفية */
+        .stars-container, .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkling 2s infinite;
+        }
+
+        @keyframes twinkling {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7));
+            animation: rain linear infinite;
+        }
+
+        @keyframes rain {
+            0% { transform: translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* الأقسام الرئيسية */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            background: rgba(42, 42, 114, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.7s ease;
+        }
+
+        section.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary-color), transparent);
+        }
+
+        /* قسم التواصل الاجتماعي */
+        .social-section {
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .social-link:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, rgba(255, 215, 0, 0.3), transparent 30%);
+            animation: rotate 4s linear infinite;
+        }
+
+        .social-link::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: rgba(42, 42, 114, 0.7);
+            border-radius: 12px;
+            z-index: 1;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(1turn); }
+        }
+
+        .social-link i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-link span {
+            font-size: 1rem;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-link.tiktok i {
+            color: #ff0050;
+        }
+
+        .social-link.github i {
+            color: #ffffff;
+        }
+
+        /* قسم الديسكورد */
+        .discord-section {
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .discord-container {
+            position: relative;
+            padding: 2rem;
+            border-radius: 15px;
+            background: rgba(114, 137, 218, 0.1);
+            margin-top: 2rem;
+        }
+
+        .discord-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%235865f2" opacity=".15"/></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .discord-btn {
+            display: inline-block;
+            background: #5865f2;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+        }
+
+        .discord-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(88, 101, 242, 0.6);
+        }
+
+        .discord-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .discord-btn:hover::before {
+            transform: scale(1);
+        }
+
+        .discord-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .discord-features {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .discord-feature {
+            flex: 0 0 30%;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .discord-feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .discord-feature i {
+            font-size: 2rem;
+            color: #5865f2;
+            margin-bottom: 1rem;
+        }
+
+        .discord-feature h3 {
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .discord-feature p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* التجاوب مع الشاشات المختلفة */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 4rem;
+            }
+
+            .logo-text {
+                font-size: 1.2rem;
+            }
+
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .social-link {
+                width: 100%;
+                max-width: 250px;
+                height: 100px;
+                margin-bottom: 1rem;
+            }
+
+            .discord-features {
+                flex-direction: column;
+            }
+
+            .discord-feature {
+                flex: 0 0 100%;
+            }
+        }
+
+/* قسم صورة السيرفر */
+.server-image-section {
+    text-align: center;
+    position: relative;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.server-image-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    transform: perspective(1000px) rotateX(0deg);
+    transition: transform 0.5s ease;
+}
+
+.server-image-container:hover {
+    transform: perspective(1000px) rotateX(5deg);
+}
+
+.server-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: all 0.5s ease;
+}
+
+.server-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(88, 101, 242, 0.2));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.server-image-container:hover .server-image-overlay {
+    opacity: 1;
+}
+
+.server-image-container:hover .server-image {
+    transform: scale(1.05);
+}
+
+.server-image-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(255, 215, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+.floating-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.floating-icon {
+    position: absolute;
+    opacity: 0;
+    animation: float-up 3s ease-in-out infinite;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(100%) scale(0.5);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-20%) scale(1);
+        opacity: 0;
+    }
+}
+
+.server-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 3;
+}
+
+.server-image-container:hover .server-title {
+    opacity: 1;
+}
+
+.server-badges {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.server-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.server-badge:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.server-badge i {
+    color: var(--accent-color);
+}
+    </style>
+</head>
+<body>
+    <!-- تأثيرات الخلفية -->
+    <div class="stars-container"></div>
+    <div class="rain-container"></div>
+
+    <!-- الترويسة والشعار -->
+    <header>
+        <div class="logo-container">
+            <div class="logo">F</div>
+            <div class="logo-text">FRONT HUB</div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-container">
+        <!-- قسم التواصل الاجتماعي -->
+        <section class="social-section">
+            <h2>تواصل معنا</h2>
+            <p>تابعنا على منصات التواصل الاجتماعي للحصول على آخر التحديثات والمحتوى الحصري</p>
+            
+            <div class="social-links">
+                <a href="https://tiktok.com/@front_zero6" class="social-link tiktok">
+                    <i class="fab fa-tiktok"></i>
+                    <span>TikTok</span>
+                </a>
+                <a href="https://github.com/Front-Evill/Script-Hub" class="social-link github">
+                    <i class="fab fa-github"></i>
+                    <span>Github</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- قسم الديسكورد -->
+        <section class="discord-section">
+            <h2>انضم إلى سيرفر الديسكورد</h2>
+            <p>سيرفر ديسكورد FRONT يوجد سكربتات  تصنع من قبل Front Hub</p>
+            
+            <div class="discord-features">
+                <div class="discord-feature">
+                    <i class="fas fa-users"></i>
+                    <h3>مطورين نشطين</h3>
+                    <p>تواصل مع مطورين  و تبادل معلومات معهم</p>
+                </div>
+                <div class="discord-feature">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>تعلم</h3>
+                    <p>سوف تتعلم كيفيه استعمال سكربت التي يقوم FRONT HUB ب انشائها</p>
+                </div>
+                <div class="discord-feature">
+                    <i class="fas fa-rocket"></i>
+                    <h3>فرص تعاون</h3>
+                    <p>يمكنك تعاون معا FRONT في بناء سكربتات </p>
+                </div>
+            </div>
+            
+            <div class="discord-container">
+                <a href="https://discord.gg/3rfd8aKree" class="discord-btn">
+                    <i class="fab fa-discord"></i>انضم الآن
+                </a>
+                <div class="discord-waves"></div>
+            </div>
+        </section>
+    </div>
+
+<!-- قسم صورة السيرفر -->
+<section class="server-image-section">
+    <h2>سيرفر FRONT HUB</h2>
+    <p>انضم إلى مجتمعنا المميز وتواصل مع المبرمجين والمطورين</p>
+    
+    <div class="server-image-container">
+        <img src="front_hub.gif" alt="صورة السيرفر" class="server-image">
+        <div class="server-image-overlay"></div>
+        <div class="server-image-pulse"></div>
+        <div class="server-title">FRONT HUB</div>
+        <div class="floating-icons" id="floating-icons"></div>
+    </div>
+    
+    <div class="server-badges">
+        <div class="server-badge">
+            <i class="fas fa-users"></i>
+            <span>مجتمع نشط</span>
+        </div>
+        <div class="server-badge">
+            <i class="fas fa-code"></i>
+            <span>سكربتات حصرية</span>
+        </div>
+        <div class="server-badge">
+            <i class="fas fa-star"></i>
+            <span>دعم فني</span>
+        </div>
+    </div>
+</section>
+
+    <!-- مشغل الصوت -->
+    <div class="audio-section">
+        <div class="sound-icon">
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="volume-slider-container">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider">
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // -------- تهيئة العناصر --------
+        document.addEventListener('DOMContentLoaded', function() {
+            // -------- تأثير النجوم المتحركة --------
+            const starsContainer = document.querySelector('.stars-container');
+            const starsCount = 100;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // حجم عشوائي للنجوم
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // مواضع عشوائية
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // توقيت عشوائي للومضان
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                star.style.animationDuration = `${2 + Math.random() * 3}s`;
+                
+                starsContainer.appendChild(star);
+            }
+            
+            // -------- تأثير المطر --------
+            const rainContainer = document.querySelector('.rain-container');
+            const raindropsCount = 80;
+            
+            for (let i = 0; i < raindropsCount; i++) {
+                const raindrop = document.createElement('div');
+                raindrop.classList.add('raindrop');
+                
+                // خصائص قطرات المطر
+                const height = Math.random() * 50 + 30;
+                raindrop.style.height = `${height}px`;
+                raindrop.style.left = `${Math.random() * 100}%`;
+                raindrop.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                raindrop.style.animationDelay = `${Math.random() * 2}s`;
+                
+                rainContainer.appendChild(raindrop);
+            }
+            
+            // -------- مشغل الصوت والسلايدر --------
+            const audioSection = document.querySelector('.audio-section');
+            const soundIcon = document.querySelector('.sound-icon');
+            const volumeSlider = document.querySelector('.volume-slider');
+            const audio = document.getElementById('background-music');
+            
+            // إخفاء/إظهار سلايدر مستوى الصوت
+            soundIcon.addEventListener('click', function() {
+                audioSection.classList.toggle('active');
+                
+                if (audio.paused) {
+                    audio.play();
+                    soundIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+                } else {
+                    audio.pause();
+                    soundIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                }
+            });
+            
+            // التحكم بمستوى الصوت
+            volumeSlider.addEventListener('input', function() {
+                audio.volume = volumeSlider.value;
+                
+                if (volumeSlider.value == 0) {
+                    soundIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else if (volumeSlider.value < 0.5) {
+                    soundIcon.innerHTML = '<i class="fas fa-volume-down"></i>';
+                } else {
+                    soundIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+            });
+            
+            // -------- تحريك الأقسام عند التمرير --------
+            const sections = document.querySelectorAll('section');
+            
+            const observerOptions = {
+                threshold: 0.2
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // -------- تأثيرات إضافية للموقع --------
+            
+            // تأثير متابعة المؤشر للعناصر
+            document.addEventListener('mousemove', function(e) {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                const socialLinks = document.querySelectorAll('.social-link');
+                
+                socialLinks.forEach(link => {
+                    const rect = link.getBoundingClientRect();
+                    const linkCenterX = rect.left + rect.width / 2;
+                    const linkCenterY = rect.top + rect.height / 2;
+                    
+                    const distanceX = (mouseX - linkCenterX) / 20;
+                    const distanceY = (mouseY - linkCenterY) / 20;
+                    
+                    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                    
+                    if (distance < 10) {
+                        link.style.transform = `translate(${distanceX / 3}px, ${distanceY / 3}px) scale(1.05)`;
+                    } else {
+                        link.style.transform = '';
+                    }
+                });
+            });
+            
+            // -------- تأثير الكتابة للشعار --------
+            const logoText = document.querySelector('.logo-text');
+            const originalText = logoText.textContent;
+            logoText.textContent = '';
+            
+            let charIndex = 0;
+            const typeEffect = setInterval(() => {
+                if (charIndex < originalText.length) {
+                    logoText.textContent += originalText.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typeEffect);
+                    
+                    // إضافة تأثير وميض بعد الانتهاء من الكتابة
+                    logoText.style.animation = 'flash 2s infinite';
+                }
+            }, 150);
+            
+            // تأثير وميض
+            const styleSheet = document.styleSheets[0];
+            styleSheet.insertRule(`
+                @keyframes flash {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                }
+            `, styleSheet.cssRules.length);
+            
+            // -------- تأثير بارتيكل عند الضغط --------
+            document.addEventListener('click', createParticles);
+            
+            function createParticles(e) {
+                const particlesContainer = document.createElement('div');
+                particlesContainer.style.position = 'fixed';
+                particlesContainer.style.left = '0';
+                particlesContainer.style.top = '0';
+                particlesContainer.style.width = '100%';
+                particlesContainer.style.height = '100%';
+                particlesContainer.style.pointerEvents = 'none';
+                particlesContainer.style.zIndex = '1000';
+                document.body.appendChild(particlesContainer);
+                
+                const particlesCount = 15;
+                
+                for (let i = 0; i < particlesCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'absolute';
+                    particle.style.width = `${Math.random() * 10 + 5}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.background = `hsl(${Math.random() * 60 + 40}, 100%, 50%)`;
+                    particle.style.borderRadius = '50%';
+                    particle.style.left = `${e.clientX}px`;
+                    particle.style.top = `${e.clientY}px`;
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 100 + 50;
+                    const vx = Math.cos(angle) * speed;
+                    const vy = Math.sin(angle) * speed;
+                    
+                    particlesContainer.appendChild(particle);
+                    
+                    const startTime = Date.now();
+                    const duration = Math.random() * 1000 + 500;
+                    
+                    function animateParticle() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = elapsed / duration;
+                        
+                        if (progress >= 1) {
+                            particle.remove();
+                            return;
+                        }
+                        
+                        const x = e.clientX + vx * progress;
+                        const y = e.clientY + vy * progress + 0.5 * 9.8 * 100 * progress * progress;
+                        const scale = 1 - progress;
+                        
+                        particle.style.transform = `translate(${x - e.clientX}px, ${y - e.clientY}px) scale(${scale})`;
+                        particle.style.opacity = 1 - progress;
+                        
+                        requestAnimationFrame(animateParticle);
+                    }
+                    
+                    requestAnimationFrame(animateParticle);
+                }
+                
+                setTimeout(() => {
+                    particlesContainer.remove();
+                }, 2000);
+            }
+        });
+
+                // -------- تأثيرات صورة السيرفر --------
+const floatingIcons = document.getElementById('floating-icons');
+const iconClasses = ['fa-code', 'fa-rocket', 'fa-star', 'fa-heart', 'fa-crown'];
+
+// إنشاء أيقونات عائمة
+function createFloatingIcons() {
+    if (!floatingIcons) return;
+    
+    // إفراغ الحاوية
+    floatingIcons.innerHTML = '';
+    
+    // إنشاء 15 أيقونة عائمة
+    for (let i = 0; i < 15; i++) {
+        const icon = document.createElement('i');
+        icon.className = `fas ${iconClasses[Math.floor(Math.random() * iconClasses.length)]} floating-icon`;
+        
+        // تحديد موضع عشوائي
+        icon.style.left = `${Math.random() * 100}%`;
+        icon.style.top = `${Math.random() * 100}%`;
+        
+        // تحديد حجم عشوائي
+        const size = Math.random() * 0.5 + 0.8; // القيمة بين 0.8 و 1.3
+        icon.style.fontSize = `${size}rem`;
+        
+        // تحديد لون عشوائي
+        const hue = Math.random() * 60 + 40; // اللون الذهبي والأصفر
+        icon.style.color = `hsl(${hue}, 100%, 70%)`;
+        
+        // تحديد مدة وتأخير للتحريك
+        icon.style.animationDuration = `${Math.random() * 2 + 3}s`;
+        icon.style.animationDelay = `${Math.random() * 5}s`;
+        
+        floatingIcons.appendChild(icon);
+    }
+}
+
+// إعادة إنشاء الأيقونات العائمة كل 15 ثانية
+createFloatingIcons();
+setInterval(createFloatingIcons, 15000);
+
+// تحريك صورة السيرفر عند تحريك الماوس
+const serverImageContainer = document.querySelector('.server-image-container');
+if (serverImageContainer) {
+    document.addEventListener('mousemove', function(e) {
+        if (!serverImageContainer) return;
+        
+        const containerRect = serverImageContainer.getBoundingClientRect();
+        const containerCenterX = containerRect.left + containerRect.width / 2;
+        const containerCenterY = containerRect.top + containerRect.height / 2;
+        
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        
+        const angleX = (mouseY - containerCenterY) / (window.innerHeight / 2) * 5;
+        const angleY = (containerCenterX - mouseX) / (window.innerWidth / 2) * 5;
+        
+        // تطبيق التأثير ثلاثي الأبعاد فقط إذا كان المؤشر قريبًا من الصورة
+        const distance = Math.sqrt(
+            Math.pow(mouseX - containerCenterX, 2) +
+            Math.pow(mouseY - containerCenterY, 2)
+        );
+        
+        if (distance < containerRect.width) {
+            serverImageContainer.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+        } else {
+            serverImageContainer.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        }
+    });
+    
+    // إعادة تعيين التأثير عند مغادرة النافذة
+    document.addEventListener('mouseleave', function() {
+        if (serverImageContainer) {
+            serverImageContainer.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        }
+    });
+}
+    </script>
+</body>
+</html>
